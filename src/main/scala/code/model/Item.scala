@@ -14,8 +14,8 @@ import scala.xml.Node
  */
 case class Item(id: String, name: String, 
                 description: String,
-                price: BigDecimal, taxable: Boolean,
-                weightInGrams: Int, qnty: Int)
+                price: BigDecimal, time: Integer,
+                url: String)
 
 /**
  * The Item companion object
@@ -50,12 +50,11 @@ object Item {
    */
   def unapply(in: Any): Option[(String, String, 
                                 String,
-                                BigDecimal, Boolean,
-                                Int, Int)] = {
+                                BigDecimal, Integer,
+                                String)] = {
     in match {
       case i: Item => Some((i.id, i.name, i.description,
-                            i.price, i.taxable,
-                            i.weightInGrams, i.qnty))
+                            i.price, i.time, i.url))
       case _ => None
     }
   }
@@ -101,41 +100,48 @@ object Item {
   // The raw data
   private def data = 
 """[
-  {"id": "1234", "name": "Cat Food",
+  {"id": "1234",
+  "name": "Cat Food",
   "description": "Yummy, tasty cat food",
-  "price": [[1,4.25], [2, 3.44], [3,3.44] , [4,55], [5.66]],
-  "taxable": true,
-  "weightInGrams": 1000,
-  "qnty": 4
+  "price": 4.25, ,
+  "time": 1445695632922,
+  "url": "http://www.riverisland.com/men/sunglasses/_/N-7rz"
   },
-  {"id": "1237", "name": "Cats meal",
-   "description": "Yummy, tasty cat meal",
-   "price": [[1,4.25], [2, 3.44], [3,3.44] , [4,55], [5.66]],
-   "taxable": true,
-   "weightInGrams": 100,
-   "qnty": 6
+  {"id": "1234",
+    "name": "Cat Food",
+    "description": "Yummy, tasty cat food",
+    "price": 3.25, ,
+    "time": 1445695732922,
+    "url": "http://www.riverisland.com/men/sunglasses/_/N-7rz"
   },
-  {"id": "1235", "name": "Dog Food",
-  "description": "Yummy, tasty dog food",
-  "price": [[1,4.25], [2, 3.44], [3,3.44] , [4,55], [5.66]],
-  "taxable": true,
-  "weightInGrams": 5000,
-  "qnty": 72
+  {"id": "1234",
+    "name": "Cat Food",
+    "description": "Yummy, tasty cat food",
+    "price": 5.25, ,
+    "time": 1445698732922,
+    "url": "http://www.riverisland.com/men/sunglasses/_/N-7rz"
   },
-  {"id": "1236", "name": "Fish Food",
-  "description": "Yummy, tasty fish food",
-  "price": [[1,4.25], [2, 3.44], [3,3.44] , [4,55], [5.66]],
-  "taxable": false,
-  "weightInGrams": 200,
-  "qnty": 45
+  {"id": "1235",
+    "name": "Fish meal",
+    "description": "Yummy, Fish meal",
+    "price": 44.243, ,
+    "time": 1445808632922,
+    "url": "http://www.riverisland.com/men/sunglasses/_/N-7rz"
   },
-  {"id": "1237", "name": "Sloth Food",
-  "description": "Slow, slow sloth food",
-  "price": [[1,4.25], [2, 3.44], [3,3.44] , [4,55], [5.66]],
-  "taxable": true,
-  "weightInGrams": 750,
-  "qnty": 62
+  {"id": "1235",
+    "name": "Fish meal",
+    "description": "Yummy, Fish meal",
+    "price": 54.25, ,
+    "time": 1445905732922,
+    "url": "http://www.riverisland.com/men/sunglasses/_/N-7rz"
   },
+  {"id": "1235",
+    "name": "Fish meal",
+    "description": "Yummy, Fish meal",
+    "price": 65.25, ,
+    "time": 1445955732922,
+    "url": "http://www.riverisland.com/men/sunglasses/_/N-7rz"
+  }
 ]
 """
 
@@ -185,7 +191,7 @@ object Item {
     val Id = id // an upper case stable ID for pattern matching
 
     items = items.filter {
-      case i@Item(Id, _, _, _, _, _, _) => 
+      case i@Item(Id, _, _, _, _, _) =>
         ret = Full(i) // side effect
         false
       case _ => true
