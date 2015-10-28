@@ -33,7 +33,7 @@ object FullRest extends RestHelper {
     case "search" :: q JsonGet _ =>
       (for {
         searchString <- q ::: S.params("q")
-        item <- Item.search(searchString)
+        item <- Item.search(searchString.replaceAll("%20"," "))
       } yield item).distinct: JValue
 
     // DELETE the item in question
