@@ -1,5 +1,8 @@
 package bootstrap.liftweb
 
+
+import dashboard.rest.{ProductRest, StoreRest, FullRest}
+import dashboard.service._
 import net.liftweb._
 import util._
 import Helpers._
@@ -9,7 +12,6 @@ import http._
 import sitemap._
 import Loc._
 
-import code.lib._
 
 /**
  * A class that's instantiated early and run.  It allows the application
@@ -18,7 +20,7 @@ import code.lib._
 class Boot {
   def boot {
     // where to search snippet
-    LiftRules.addToPackages("code")
+    LiftRules.addToPackages("dashboard")
 
     // Build SiteMap
     def sitemap() = SiteMap(
@@ -45,7 +47,9 @@ class Boot {
       new Html5Properties(r.userAgent))    
 
     // the stateless REST handlers
-    LiftRules.statelessDispatch.append(FullRest)
-
+    LiftRules.statelessDispatch.append(ProductRest)
+    LiftRules.statelessDispatch.append(StoreRest)
   }
 }
+
+
