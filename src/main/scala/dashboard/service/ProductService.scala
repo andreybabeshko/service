@@ -74,7 +74,7 @@ object ProductService {
             }
             else productPartName
           }
-        val current:Seq[Seq[Any]] = products.get(productName.mkString).getOrElse(Seq[Seq[Seq[Any]]]()).++(Seq(Seq(store.fetchTime, price)))
+        val current:Seq[Seq[Any]] = products.get(productName.mkString).getOrElse(Seq[Seq[Seq[Any]]]()).++(Seq(Seq(getStoreName(store.title), price)))
         products = products.+(productName.mkString.trim -> current)
       }
     }
