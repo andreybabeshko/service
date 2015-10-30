@@ -204,7 +204,7 @@ var Chart = React.createClass({
                     defaultSeriesType: 'spline'
                 },
                 title: {
-                    text: 'Monthly Average Price'
+                    text: ''
                 },
                 yAxis: {
                     title: {
