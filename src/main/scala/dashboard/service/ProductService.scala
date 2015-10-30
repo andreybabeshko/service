@@ -63,8 +63,9 @@ object ProductService {
     } {
       var first = false
       var price = 0.00f
-      if (raw.contains("Aligned:") && raw.contains(subString)) {
-        val productName = for {productPartName <- raw.replaceAll("Aligned:", "").split("\\t")
+      if (raw.contains("Aligned:") && raw.replaceAll("\\t","").contains(subString)) {
+        val productName = for {
+          productPartName <- raw.replaceAll("Aligned:", "").split("\\t")
         } yield {
             if (productPartName.contains("£") || productPartName.contains("$") || first) {
               first = true
@@ -80,11 +81,11 @@ object ProductService {
     products
   }
 
-  def searchProductsWithPrices (subString: String, store: String) :Map[String,Seq[Seq[Any]]]  = {
+  def searchProductsWithPrices (subString: String, filteStore: String) :Map[String,Seq[Seq[Any]]]  = {
     var products:Map[String, Seq[Seq[Any]]] = Map[String, Seq[Seq[Any]]]()
     val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("$text" -> MongoDBObject("$search" -> subString))).toList
     for{
-      store <- productEntityList
+      store <- productEntityList.filter(p => getStoreName(p.title).contains(filteStore))
       raw <- store.text.split("\\n")
     } {
       var first = false
@@ -104,5 +105,9 @@ object ProductService {
       }
     }
     products
+  }
+
+  def getStoreName(url: String): String = {
+    url.substring(0, url.indexOf("/", 8)).replaceAll("(http|https)://", "")
   }
 }
