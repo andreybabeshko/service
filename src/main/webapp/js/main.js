@@ -94,7 +94,7 @@ var Home = React.createClass({
         return (
             <div className="home" ref="home">
                 < Header onUserSelect={this.handleSelect} shops={this.state.shops}/>
-                {this.state.chart && < Chart chart={this.state.chart}/>}
+                {this.state.chart && < Chart chart={this.state.chart} shops={this.state.shops}/>}
             </div>
         );
     }
@@ -194,12 +194,11 @@ var Chart = React.createClass({
         }
     },
     createChart: function(data){
-        console.log(data);
         if(this.state.chart){
             this.state.chart.destroy();
         }
         if(data){
-            var chart = new Highcharts.Chart({
+            var chartConfig = {
                 chart: {
                     renderTo: ReactDOM.findDOMNode(this),
                     defaultSeriesType: 'spline'
@@ -207,22 +206,32 @@ var Chart = React.createClass({
                 title: {
                     text: 'Monthly Average Price'
                 },
-                xAxis: {
-                    type: 'datetime',
-                    dateTimeLabelFormats: {
-                        day: '%e of %b'
-                    },
-                    title: {
-                        text: 'Date'
-                    }
-                },
                 yAxis: {
                     title: {
                         text: 'Price'
                     }
                 },
                 series: [{name:data.name, data: data.price}]
-            });
+            };
+            if(!data.store){
+                chartConfig.xAxis = {
+                    type: 'datetime',
+                        dateTimeLabelFormats: {
+                        day: '%e of %b'
+                    },
+                    title: {
+                        text: 'Date'
+                    }
+                }
+            }else{
+                chartConfig.xAxis = {
+                    categories: this.props.shops.map(function(item){
+                        return item.name;
+                    })
+                }
+            }
+            console.log(chartConfig);
+            var chart = new Highcharts.Chart(chartConfig);
         }
         this.setState({chart: chart});
     },
