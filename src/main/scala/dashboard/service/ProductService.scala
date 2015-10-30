@@ -56,7 +56,7 @@ object ProductService {
 
   def searchProductsWithPrices (subString:String) :Map[String,Seq[Seq[Any]]]  = {
     var products:Map[String, Seq[Seq[Any]]] = Map[String,Seq[Seq[Any]]]()
-    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("$text" -> MongoDBObject("$search" -> subString))).toList
+    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("$text" -> MongoDBObject("$search" -> subString))).sort(orderBy = MongoDBObject("fetchTime" -> -1)).toList
     for{
       store <- productEntityList
       raw <- store.text.split("\\n")
@@ -83,7 +83,7 @@ object ProductService {
 
   def searchProductsWithPrices (subString: String, filteStore: String) :Map[String,Seq[Seq[Any]]]  = {
     var products:Map[String, Seq[Seq[Any]]] = Map[String, Seq[Seq[Any]]]()
-    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("$text" -> MongoDBObject("$search" -> subString))).toList
+    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("$text" -> MongoDBObject("$search" -> subString))).sort(orderBy = MongoDBObject("fetchTime" -> -1)).toList
     for{
       store <- productEntityList.filter(p => getStoreName(p.title).contains(filteStore))
       raw <- store.text.split("\\n")
