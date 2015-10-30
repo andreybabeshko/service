@@ -1,7 +1,7 @@
 package bootstrap.liftweb
 
 
-import dashboard.rest.{ProductRest, StoreRest, FullRest}
+import dashboard.rest.{ProductRest, StoreRest}
 import dashboard.service._
 import net.liftweb._
 import util._
