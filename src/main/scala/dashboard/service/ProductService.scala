@@ -33,7 +33,7 @@ object ProductService {
 
   def searchProducts (subString:String) :Seq[Product]  = {
     var products:Seq[Product] = Seq[Product]()
-    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("text" -> MongoDBObject("$regex" -> subString))).toList
+    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("text" -> MongoDBObject("$regex" -> subString))).limit(15).toList
     for{
       store <- productEntityList
       raw <- store.text.split("\\n")

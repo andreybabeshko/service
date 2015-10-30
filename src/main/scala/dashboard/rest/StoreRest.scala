@@ -14,7 +14,7 @@ object StoreRest extends BaseRestApi{
         new ResponseStore(s.substring(0, s.indexOf("/", 8)).replaceAll("(http|https)://", ""),s)))
 
     case JsonGet("search" :: subString :: Nil, _) =>
-     val storeList:Seq[StoreEntity] = StoreDAO.find(ref = MongoDBObject("title" -> MongoDBObject("$regex" -> subString, "$options" -> "si"))).toList
+     val storeList:Seq[StoreEntity] = StoreDAO.find(ref = MongoDBObject("title" -> MongoDBObject("$regex" -> subString, "$options" -> "si"))).limit(15).toList
     serialize(storeList.seq.distinct.map(s =>
       new ResponseStore(s.name,s.title)))
   })
