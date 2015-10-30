@@ -1,6 +1,6 @@
 package dashboard.db.entity
 
-import com.novus.salat.annotations.raw.Key
+import com.novus.salat.annotations.raw._
 
-case class ProductEntity (@Key("_id") id: Option[String] , text: String, fetchTime: Long, title:String) {
+case class ProductEntity (@Key("_id") id: Option[String] , text: String, prevFetchTime: Long, title:String) {
 } 
