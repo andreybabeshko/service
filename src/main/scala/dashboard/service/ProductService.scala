@@ -48,7 +48,7 @@ object ProductService {
             }
             else productPartName
           }
-        products :+= new Product(productName.mkString, raw.replaceAll("\\t",""))
+        products :+= new Product(productName.mkString, "")
       }
     }
     products.distinct
