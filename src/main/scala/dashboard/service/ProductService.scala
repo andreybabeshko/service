@@ -48,7 +48,7 @@ object ProductService {
             }
             else productPartName
           }
-        products :+= new Product(productName.mkString, "")
+        products :+= new Product(productName.mkString.trim, "")
       }
     }
     products.distinct
@@ -74,7 +74,33 @@ object ProductService {
             else productPartName
           }
         val current = products.get(productName.mkString).getOrElse(Map[Long, Float]()).+(store.fetchTime -> price)
-        products = products.+(productName.mkString -> current)
+        products = products.+(productName.mkString.trim -> current)
+      }
+    }
+    products
+  }
+
+  def searchProductsWithPrices (subString: String, store: String) :Map[String,Map[Long, Float]]  = {
+    var products:Map[String,Map[Long, Float]] = Map[String, Map[Long, Float]]()
+    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("$text" -> MongoDBObject("$search" -> subString))).toList
+    for{
+      store <- productEntityList
+      raw <- store.text.split("\\n")
+    } {
+      var first = false
+      var price = 0.00f
+      if (raw.contains("Aligned:") && raw.contains(subString)) {
+        val productName = for {productPartName <- raw.replaceAll("Aligned:", "").split("\\t")
+        } yield {
+            if (productPartName.contains("£") || productPartName.contains("$") || first) {
+              first = true
+              price = productPartName.replaceAll("($|£)","").toFloat
+              ""
+            }
+            else productPartName
+          }
+        val current = products.get(productName.mkString).getOrElse(Map[Long, Float]()).+(store.fetchTime -> price)
+        products = products.+(productName.mkString.trim -> current)
       }
     }
     products
