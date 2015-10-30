@@ -15,18 +15,17 @@ object ProductRest extends BaseRestApi {
 
     case JsonGet("prices" :: product :: Nil, _) =>
       serialize(ProductService.searchProductsWithPrices(product.replaceAll("%20", " "))
-        .map(p => new ResponseProductPrice(p._1, "", p._2.keys.toArray,  p._2.values.toArray)))
+        .map(p => new ResponseProductPrice(p._1, "", p._2)))
 
     case JsonGet("prices" :: product :: store ::Nil, _) =>
       serialize(ProductService.searchProductsWithPrices(product.replaceAll("%20", " "), store.replaceAll("%20", " "))
-        .map(p => new ResponseProductPrice(p._1, "", p._2.keys.toArray,  p._2.values.toArray)))
+        .map(p => new ResponseProductPrice(p._1, "", p._2)))
   })
 
   case class ResponseProductPrice (
    name:  String,
    store: String,
-   date:  Array[Long],
-   price: Array[Float]
+   price: Seq[Seq[Any]]
   )
 
 }

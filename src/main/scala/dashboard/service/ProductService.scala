@@ -54,8 +54,8 @@ object ProductService {
     products.distinct
   }
 
-  def searchProductsWithPrices (subString:String) :Map[String,Map[Long, Float]]  = {
-    var products:Map[String,Map[Long, Float]] = Map[String, Map[Long, Float]]()
+  def searchProductsWithPrices (subString:String) :Map[String,Seq[Seq[Any]]]  = {
+    var products:Map[String, Seq[Seq[Any]]] = Map[String,Seq[Seq[Any]]]()
     val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("$text" -> MongoDBObject("$search" -> subString))).toList
     for{
       store <- productEntityList
@@ -73,15 +73,15 @@ object ProductService {
             }
             else productPartName
           }
-        val current = products.get(productName.mkString).getOrElse(Map[Long, Float]()).+(store.fetchTime -> price)
+        val current:Seq[Seq[Any]] = products.get(productName.mkString).getOrElse(Seq[Seq[Seq[Any]]]()).++(Seq(Seq(store.fetchTime, price)))
         products = products.+(productName.mkString.trim -> current)
       }
     }
     products
   }
 
-  def searchProductsWithPrices (subString: String, store: String) :Map[String,Map[Long, Float]]  = {
-    var products:Map[String,Map[Long, Float]] = Map[String, Map[Long, Float]]()
+  def searchProductsWithPrices (subString: String, store: String) :Map[String,Seq[Seq[Any]]]  = {
+    var products:Map[String, Seq[Seq[Any]]] = Map[String, Seq[Seq[Any]]]()
     val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("$text" -> MongoDBObject("$search" -> subString))).toList
     for{
       store <- productEntityList
@@ -99,7 +99,7 @@ object ProductService {
             }
             else productPartName
           }
-        val current = products.get(productName.mkString).getOrElse(Map[Long, Float]()).+(store.fetchTime -> price)
+        val current:Seq[Seq[Any]] = products.get(productName.mkString).getOrElse(Seq[Seq[Any]]()).++(Seq(Seq(store.fetchTime, price)))
         products = products.+(productName.mkString.trim -> current)
       }
     }
