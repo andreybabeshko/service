@@ -33,7 +33,7 @@ object ProductService {
 
   def searchProducts (subString:String) :Seq[Product]  = {
     var products:Seq[Product] = Seq[Product]()
-    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("text" -> MongoDBObject("$regex" -> subString, "$options" -> "si"))).toList
+    val productEntityList:Seq[ProductEntity] = ProductDAO.find(ref = MongoDBObject("text" -> MongoDBObject("$regex" -> subString))).toList
     for{
       store <- productEntityList
       raw <- store.text.split("\\n")
@@ -74,7 +74,7 @@ object ProductService {
             }
             else productPartName
           }
-        val current:Seq[Seq[Any]] = products.get(productName.mkString).getOrElse(Seq[Seq[Seq[Any]]]()).++(Seq(Seq(getStoreName(store.title), price)))
+        val current:Seq[Seq[Any]] = products.get(productName.mkString).getOrElse(Seq[Seq[Seq[Any]]]()).++(Seq(Seq(store.fetchTime, price)))
         products = products.+(productName.mkString.trim -> current)
       }
     }
